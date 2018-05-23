@@ -1,0 +1,14 @@
+{
+  "name": "koa-learn",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.45",
+    "@types/node": "^10.1.2",
+    "ts-node": "^6.0.3"
+  }
+}
