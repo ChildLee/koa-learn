@@ -1,16 +1,26 @@
 import * as mysql from 'mysql'
+import {queryCallback} from 'mysql'
 
-let connection = mysql.createConnection({
-    host: 'localhost',
+const pool = mysql.createPool({
+    multipleStatements: true,//允许多条sql语句
+    host: '594dd08f4ab56.gz.cdb.myqcloud.com',
+    port: 17677,
     user: 'root',
-    password: 'sa',
+    password: 'ymy2017888888',
     database: 'area'
 })
 
-connection.connect()
+let query = function (sql: string, options: any, callback: queryCallback) {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            callback(err, null, null)
+        } else {
+            connection.query(sql, options, (err, results, fields) => {
+                connection.release()
+                callback(err, results, fields)
+            })
+        }
+    })
+}
 
-connection.query('select * from area_provinces', (err, results) => {
-    console.log(results)
-})
-
-connection.end()
+export {query}

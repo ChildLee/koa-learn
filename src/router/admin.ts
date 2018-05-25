@@ -20,9 +20,7 @@ router.post('/c', async (ctx, next) => {
 
     form.parse(ctx.req, function (err, fields, files) {
         if (files.file) {
-            console.log(files)
-            console.log(files.file.length)
-            let multiples = files.file.length
+            let multiples = files.file.size
             let fileSize = multiples || 1
             for (let i = 0; i < fileSize; i++) {
                 let time = dayjs(Date.now()).format('YYYYMMDDHHmmss')
