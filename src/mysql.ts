@@ -1,5 +1,4 @@
 import * as mysql from 'mysql'
-import {queryCallback} from 'mysql'
 
 const pool = mysql.createPool({
     multipleStatements: true,//允许多条sql语句
@@ -10,17 +9,16 @@ const pool = mysql.createPool({
     database: 'area'
 })
 
-let query = function (sql: string, options: any, callback: queryCallback) {
-    pool.getConnection((err, connection) => {
-        if (err) {
-            callback(err, null, null)
-        } else {
-            connection.query(sql, options, (err, results, fields) => {
-                connection.release()
-                callback(err, results, fields)
-            })
-        }
+let query = function (sql: string, options: any) {
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            err ? reject(err)
+                : connection.query(sql, options, (err, results, fields) => {
+                    connection.release()
+                    err ? reject(err) : resolve(results)
+                })
+        })
     })
 }
 
-export {query}
+export default query
