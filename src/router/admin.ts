@@ -42,5 +42,4 @@ function randomStr(len = 10) {
     return data
 }
 
-
 export default router

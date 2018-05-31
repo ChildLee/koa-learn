@@ -1,16 +1,13 @@
-import * as WebSocket from 'ws'
-import * as http from 'http'
+import * as path from 'path'
 import * as Koa from 'koa'
-import router from './router'
+import * as serve from 'koa-static'
 
 const app = new Koa()
-const server = http.createServer()
 
-const wss = new WebSocket.Server({noServer: true})
+app.use(serve(path.join(__dirname, '..', 'static')))
+// app.use(router.routes()).use(router.allowedMethods())
 
-app.use(router.routes()).use(router.allowedMethods())
-
-server.listen(3000, () => {
+app.listen(3000, () => {
     console.log('服务器启动成功!')
     console.log('http://127.0.0.1:3000')
 })

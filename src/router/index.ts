@@ -4,6 +4,7 @@ import user from './user'
 
 const router = new Router()
 
+
 router.use('', admin.routes(), admin.allowedMethods())
 router.use('/user', user.routes(), admin.allowedMethods())
 

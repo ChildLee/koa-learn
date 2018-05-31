@@ -8,10 +8,12 @@
     "mysql": "ts-node src/test.ts"
   },
   "dependencies": {
+    "@types/koa-static": "^4.0.0",
     "dayjs": "^1.6.3",
     "formidable": "^1.2.1",
     "koa": "^2.5.1",
     "koa-router": "^7.4.0",
+    "koa-static": "^4.0.3",
     "mysql": "^2.15.0",
     "ws": "^5.2.0"
   },
