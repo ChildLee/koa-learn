@@ -4,11 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src",
-    "mysql": "ts-node src/test.ts"
+    "start": "ts-node src/app.ts",
+    "test": "ts-node src/utils/dateUtil.ts",
+    "mysql": "ts-node test/test.ts",
+    "tsc": "tsc"
   },
   "dependencies": {
-    "dayjs": "^1.6.3",
+    "dayjs": "^1.6.5",
     "formidable": "^1.2.1",
     "koa": "^2.5.1",
     "koa-jwt": "^3.3.2",
@@ -18,13 +20,13 @@
   },
   "devDependencies": {
     "@types/formidable": "^1.0.31",
-    "@types/koa": "^2.0.45",
+    "@types/koa": "^2.0.46",
     "@types/koa-jwt": "^3.3.0",
     "@types/koa-router": "^7.0.28",
     "@types/koa-static": "^4.0.0",
-    "@types/mysql": "^2.15.4",
-    "@types/node": "^10.1.2",
-    "ts-node": "^6.0.3",
-    "typescript": "^2.8.3"
+    "@types/mysql": "^2.15.5",
+    "@types/node": "^10.3.0",
+    "ts-node": "^6.0.5",
+    "typescript": "^2.9.1"
   }
 }
