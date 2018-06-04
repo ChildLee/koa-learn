@@ -176,10 +176,6 @@ core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-dayjs@^1.6.5:
-  version "1.6.5"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.6.5.tgz#d7c18785990f6d839161b84f4cc924d9324dfa33"
-
 debug@*, debug@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"

@@ -19,7 +19,6 @@ class Admin {
         form.multiples = true
 
         form.parse(ctx.req, function (err, fields, files) {
-            console.log(fields)
             if (files.file) {
                 let multiples = files['file']['length']
                 let fileSize = multiples || 1

@@ -10,7 +10,6 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "dayjs": "^1.6.5",
     "formidable": "^1.2.1",
     "koa": "^2.5.1",
     "koa-jwt": "^3.3.2",
