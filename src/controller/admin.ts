@@ -21,13 +21,13 @@ class Admin {
         form.parse(ctx.req, function (err, fields, files) {
             console.log(fields)
             if (files.file) {
-                let multiples = files.file.size
+                let multiples = files['file']['length']
                 let fileSize = multiples || 1
                 for (let i = 0; i < fileSize; i++) {
                     let rawPath = multiples ? files.file[i].path : files.file.path
                     let extname = path.extname(rawPath)
                     let newname = new DateUtil().format('YYYYMMDDHHmmss') + RandomUtil.randomStr() + extname
-                    fs.renameSync(rawPath, path.join(__dirname, 'static', newname))
+                    console.log(fs.renameSync(rawPath, path.join(__dirname, 'static', newname)))
                 }
             }
         })
