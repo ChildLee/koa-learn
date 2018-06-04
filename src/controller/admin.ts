@@ -1,8 +1,8 @@
 import * as fs from 'fs'
-import * as dayjs from 'dayjs'
+import DateUtil from '../utils/DateUtil'
 import * as formidable from 'formidable'
 import * as path from 'path'
-import RandomUtil from '../utils/randomUtil'
+import RandomUtil from '../utils/RandomUtil'
 
 class Admin {
     static async test(ctx, next) {
@@ -24,10 +24,9 @@ class Admin {
                 let multiples = files.file.size
                 let fileSize = multiples || 1
                 for (let i = 0; i < fileSize; i++) {
-                    let time = dayjs(Date.now()).format('YYYYMMDDHHmmss')
                     let rawPath = multiples ? files.file[i].path : files.file.path
                     let extname = path.extname(rawPath)
-                    let newname = time + RandomUtil.randomStr() + extname
+                    let newname = new DateUtil().format('YYYYMMDDHHmmss') + RandomUtil.randomStr() + extname
                     fs.renameSync(rawPath, path.join(__dirname, 'static', newname))
                 }
             }

@@ -1,1 +1,1 @@
-let day=require('dayjs')
+console.log(Object.prototype.toString.call(new Date()))

@@ -1,8 +1,10 @@
 class DateUtil {
     private date: Date
 
-    constructor(param?: string) {
-        this.date = param ? new Date(param) : new Date()
+    constructor(param?: any) {
+        Object.prototype.toString.call(param) === '[object Date]' ?
+            this.date = param
+            : this.date = param ? new Date(param) : new Date()
     }
 
     format(param: string = 'YYYY-MM-DD HH:mm:ss') {
@@ -47,11 +49,5 @@ class DateUtil {
         return param
     }
 }
-
-setInterval(function () {
-    console.time('1')
-    console.log(new DateUtil().format())
-    console.timeEnd('1')
-}, 1000)
 
 export default DateUtil
