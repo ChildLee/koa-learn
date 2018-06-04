@@ -21,3 +21,14 @@ export function toRawType(obj: any): string {
     return _toString.call(obj).slice(8, -1)
 }
 
+export function promisify(fn: Function): any {
+    return function () {
+        let args = Array.prototype.slice.call(arguments)
+        return new Promise((resolve, reject) => {
+            args.push(function (err, result) {
+                err ? reject(err) : resolve(result)
+            })
+            fn.apply(null, args)
+        })
+    }
+}
