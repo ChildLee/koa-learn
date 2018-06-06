@@ -1,12 +1,19 @@
 import * as fs from 'fs'
-import DateUtil from '../utils/DateUtil'
-import * as formidable from 'formidable'
 import * as path from 'path'
+import * as formidable from 'formidable'
+import DateUtil from '../utils/DateUtil'
 import RandomUtil from '../utils/RandomUtil'
+import AdminDao from '../dao/AdminDao'
 
-class Admin {
+class Controller {
+
+}
+
+class Admin extends Controller {
     static async test(ctx, next) {
-        ctx.body = {a: 1}
+        await AdminDao.getAdmin([11]).then(res => {
+            ctx.body = res
+        })
     }
 
     static async file(ctx, next) {

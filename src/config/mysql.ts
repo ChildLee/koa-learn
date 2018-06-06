@@ -9,7 +9,7 @@ const pool = mysql.createPool({
     database: 'area'
 })
 
-let query = function (sql, options) {
+let query = function (sql, options=[]) {
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             err ? reject(err)

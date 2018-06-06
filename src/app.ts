@@ -1,8 +1,25 @@
 import * as path from 'path'
 import * as Koa from 'koa'
 import * as serve from 'koa-static'
+import * as log4js from 'log4js'
 import router from './router'
 
+
+log4js.configure({
+    appenders: {
+        out: {
+            type: 'stdout',
+            filename: '',
+        }
+    },
+    categories: {
+        default: {appenders: ['out'], level: 'info'}
+    }
+})
+
+let logger = log4js.getLogger()
+logger.level = 'debug'
+logger.debug('Some debug messages')
 
 const app = new Koa()
 
