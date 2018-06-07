@@ -5,11 +5,7 @@ import DateUtil from '../utils/DateUtil'
 import RandomUtil from '../utils/RandomUtil'
 import AdminDao from '../dao/AdminDao'
 
-class Controller {
-
-}
-
-class Admin extends Controller {
+class Admin {
     static async test(ctx, next) {
         await AdminDao.getAdmin([11]).then(res => {
             ctx.body = res
