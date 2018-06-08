@@ -11,6 +11,7 @@
   "dependencies": {
     "dateformat": "^3.0.3",
     "formidable": "^1.2.1",
+    "jsonwebtoken": "^8.2.2",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.1",
     "koa-jwt": "^3.3.2",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@types/dateformat": "^1.0.1",
     "@types/formidable": "^1.0.31",
+    "@types/jsonwebtoken": "^7.2.7",
     "@types/koa": "^2.0.46",
     "@types/koa-bodyparser": "^4.2.0",
     "@types/koa-jwt": "^3.3.0",

@@ -1,8 +1,14 @@
 import AdminDao from '../dao/AdminDao'
+import * as jwt from 'jsonwebtoken'
+import config from '../config'
 
 class AdminService {
-    static async test() {
-        return await AdminDao.getAdmin([{code: 11}])
+    static login() {
+        return jwt.sign({data: config.secret}, 'secret', {expiresIn: config.expiresIn})
+    }
+
+    static area() {
+        return AdminDao.getAdmin([{code: 11}])
     }
 }
 

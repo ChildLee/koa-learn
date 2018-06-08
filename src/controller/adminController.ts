@@ -6,9 +6,13 @@ import RandomUtil from '../utils/RandomUtil'
 import adminService from '../service/adminService'
 
 class AdminController {
-    static async test(ctx, next) {
-        let {a} = ctx.request.body
-        ctx.body = await adminService.test()
+    static async login(ctx) {
+        let token = adminService.login()
+        ctx.body = {token}
+    }
+
+    static async area(ctx) {
+        ctx.body = await adminService.area()
     }
 
     static async file(ctx, next) {
