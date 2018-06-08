@@ -9,10 +9,17 @@ import router from './router'
 
 const app = new Koa()
 
-app.use(jwt({secret: config.secret}).unless({path: ['/login']}))//token验证
+app.use(async (ctx, next) => {
+    const start = Date.now()
+    await next()
+    const ms = Date.now() - start
+    console.log(`${ctx.method} ${ctx.status} ${ctx.url} - ${ms} ms`)
+})
+
+app.use(serve(path.join(__dirname, '..', 'static')))//静态文件目录
+app.use(jwt({secret: config.secret}).unless({path: [/^\/login/]}))//token验证
 app.use(cors())//跨域
 app.use(bodyParser())//解析参数
-app.use(serve(path.join(__dirname, '..', 'static')))//静态文件目录
 app.use(router.routes()).use(router.allowedMethods())//路由
 
 app.listen(3000, () => {

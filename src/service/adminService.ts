@@ -4,7 +4,7 @@ import config from '../config'
 
 class AdminService {
     static login() {
-        return jwt.sign({data: config.secret}, 'secret', {expiresIn: config.expiresIn})
+        return jwt.sign({}, config.secret, {expiresIn: config.expiresIn})
     }
 
     static area() {
