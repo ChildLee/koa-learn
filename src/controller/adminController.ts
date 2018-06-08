@@ -1,15 +1,14 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import * as formidable from 'formidable'
-import DateUtil from '../utils/DateUtil'
+import * as dateformat from 'dateformat'
 import RandomUtil from '../utils/RandomUtil'
-import AdminDao from '../dao/AdminDao'
+import adminService from '../service/adminService'
 
-class Admin {
+class AdminController {
     static async test(ctx, next) {
-        await AdminDao.getAdmin([11]).then(res => {
-            ctx.body = res
-        })
+        let {a} = ctx.request.body
+        ctx.body = await adminService.test()
     }
 
     static async file(ctx, next) {
@@ -28,7 +27,7 @@ class Admin {
                 for (let i = 0; i < fileSize; i++) {
                     let rawPath = multiples ? files.file[i].path : files.file.path
                     let extname = path.extname(rawPath)
-                    let newname = new DateUtil().format('YYYYMMDDHHmmss') + RandomUtil.randomStr() + extname
+                    let newname = dateformat('yyyymmddHHMMss') + RandomUtil.randomStr() + extname
                     console.log(fs.renameSync(rawPath, path.join(__dirname, 'static', newname)))
                 }
             }
@@ -36,4 +35,4 @@ class Admin {
     }
 }
 
-export default Admin
+export default AdminController

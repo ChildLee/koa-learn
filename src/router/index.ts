@@ -1,10 +1,8 @@
 import * as Router from 'koa-router'
-import admin from './admin'
+import adminRouter from './adminRouter'
 
-const router = new Router({
-    prefix: '/v1'
-})
+const router = new Router()
 
-router.use(admin.routes(), admin.allowedMethods())
+router.use(adminRouter.routes())
 
 export default router
