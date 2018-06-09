@@ -1,3 +1,5 @@
+import {err, log} from './log'
+
 class Middleware {
     //错误处理中间件
     static error() {
@@ -7,6 +9,7 @@ class Middleware {
             } catch (e) {
                 let status = e.status || 500
                 let message = e.message
+                err.error(message)
                 ctx.body = {
                     status, message
                 }
@@ -20,7 +23,7 @@ class Middleware {
             const start = Date.now()
             await next()
             const ms = Date.now() - start
-            console.log(`${ctx.method} ${ctx.status} ${ctx.url} - ${ms}ms`)
+            log.info(`${ctx.method} ${ctx.status} ${ctx.url} - ${ms}ms`)
         }
     }
 }

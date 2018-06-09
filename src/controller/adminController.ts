@@ -1,17 +1,17 @@
 import adminService from '../service/adminService'
+import {success} from '../utils/result'
 
 class AdminController {
     static async login(ctx) {
-        let token = adminService.login()
-        ctx.body = {token}
+        ctx.body = success({token: adminService.login()})
     }
 
     static async area(ctx) {
-        ctx.body = await adminService.area()
+        ctx.body = success(await adminService.area())
     }
 
-    static async file(ctx, next) {
-        ctx.body = await adminService.file(ctx)
+    static async file(ctx) {
+        ctx.body = success(await adminService.file(ctx.req))
     }
 }
 
