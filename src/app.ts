@@ -1,3 +1,4 @@
+import * as bug from 'debug'
 import * as path from 'path'
 import * as Koa from 'koa'
 import * as jwt from 'koa-jwt'
@@ -7,6 +8,8 @@ import * as bodyParser from 'koa-bodyparser'
 import config from './config'
 import router from './router'
 import Middleware from './config/middleware'
+
+const debug = bug('app')
 
 const app = new Koa()
 
@@ -20,6 +23,5 @@ app.use(router.routes()).use(router.allowedMethods())//路由
 
 
 app.listen(3000, () => {
-    console.log('服务器启动成功!')
-    console.log('http://127.0.0.1:3000')
+    debug('服务器启动成功!', 'http://127.0.0.1:3000')
 })
