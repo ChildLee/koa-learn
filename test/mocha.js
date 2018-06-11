@@ -1,17 +1,20 @@
-var assert = require('assert')
+const assert = require('assert')
+const req = require('supertest')
+const app = require('../dist/src/app').default
 
-describe('Array', function () {
-    describe('#indexOf()', function () {
-        it('should return -1 when the value is not present', function () {
-            assert.equal([1, 2, 3].indexOf(4), -1)
+describe('moduleName', function () {
+
+    describe('moduleName1', function () {
+        it('info', function () {
+            assert.notStrictEqual({a: 1}, {a: '1'})
         })
     })
-})
 
-describe('Array1', function () {
-    describe('#indexOf()', function () {
-        it('should return -1 when the value is not present', function () {
-            assert.equal([1, 2, 3].indexOf(4), -1)
+    describe('moduleName2', function () {
+        it('info', function () {
+            req(app.listen()).post('/login').end((err, res) => {
+                console.log(res.body)
+            })
         })
     })
-})
+}) 

@@ -25,3 +25,5 @@ app.use(router.routes()).use(router.allowedMethods())//路由
 app.listen(3000, () => {
     debug('服务器启动成功!', 'http://127.0.0.1:3000')
 })
+
+export default app
