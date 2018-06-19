@@ -1,20 +1,21 @@
-const assert = require('assert')
 const req = require('supertest')
 const app = require('../dist/src/app').default
 
 describe('moduleName', function () {
+    it('info', async () => {
+        let token = ''
 
-    describe('moduleName1', function () {
-        it('info', function () {
-            assert.notStrictEqual({a: 1}, {a: '1'})
-        })
-    })
+        await req(app.listen()).post('/login')
+            .expect(200)
+            .then(res => {
+                token = 'Bearer ' + res.body.data.token
+            })
 
-    describe('moduleName2', function () {
-        it('info', function () {
-            req(app.listen()).post('/login').end((err, res) => {
+        await req(app.listen()).get('/area')
+            .set('authorization', token)
+            .expect(200)
+            .then(res => {
                 console.log(res.body)
             })
-        })
     })
 }) 
