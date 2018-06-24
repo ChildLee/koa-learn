@@ -18,7 +18,7 @@ app.use(Middleware.ms())
 app.use(cors())//跨域
 app.use(serve(path.join(__dirname, '..', 'static')))//静态文件目录
 
-app.use(jwt({secret: config.secret}).unless({path: [/^\/login/]}))//token验证
+app.use(jwt({secret: config.secret}).unless({path: [/^\/login/, /^\/wx(\/?\w*)*/]}))//token验证
 
 app.use(bodyParser())//解析参数
 app.use(router.routes()).use(router.allowedMethods())//路由
