@@ -8,8 +8,8 @@ log4js.configure({
     },
     categories: {
         default: {appenders: ['stdout'], level: 'info'},
-        err: {appenders: ['err'], level: 'error'},
-        log: {appenders: ['log'], level: 'info'}
+        err: {appenders: ['err', 'stdout'], level: 'error'},
+        log: {appenders: ['log', 'stdout'], level: 'info'}
     }
 })
 

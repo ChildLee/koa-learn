@@ -4,7 +4,7 @@ class Result {
      * @param {object | boolean} data 返回参数
      * @returns {{code: number; msg: string; data: object | boolean}}
      */
-    static success(data: object | boolean) {
+    static success(data: object | boolean | string) {
         return {
             code: 0,
             msg: 'success',

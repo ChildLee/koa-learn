@@ -23,7 +23,6 @@ app.use(jwt({secret: config.secret}).unless({path: [/^\/login/, /^\/wx(\/?\w*)*/
 app.use(bodyParser())//解析参数
 app.use(router.routes()).use(router.allowedMethods())//路由
 
-
 app.listen(3000, () => {
     debug('服务器启动成功!', 'http://127.0.0.1:3000')
 })
