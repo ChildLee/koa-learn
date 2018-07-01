@@ -5,17 +5,47 @@ import * as request from 'request'
 import * as dateformat from 'dateformat'
 import config from '../config'
 
-const parser = new xml2js.Parser()
-const builder = new xml2js.Builder()
+const parser = new xml2js.Parser({
+    //不获取根节点
+    explicitRoot: false,
+    //true始终将子节点放入数组中; false则只有存在多个数组时才创建数组。
+    explicitArray: false
+})
+const builder = new xml2js.Builder({
+    //根节点名称
+    rootName: 'xml',
+    //省略XML标题
+    headless: true
+})
 
 //微信支付
 class WxPay {
     private static unifiedOrderUrl: string = 'https://api.mch.weixin.qq.com/pay/unifiedorder'
     private static orderQueryUrl: string = 'https://api.mch.weixin.qq.com/pay/orderquery'
 
-    //生成prepay_id
-    static getPrepay(data) {
-        let param = {
+    //小程序支付
+    static appletsPayment(param): Promise<any> {
+        return this.getPrepay(param).then(res => {
+            //判断请求是否成功
+            if (res['return_code'] !== 'SUCCESS') {
+                return res
+            }
+            //发起微信小程序支付参数
+            const args = {
+                appId: res['appid'],
+                timeStamp: Date.now().toString(),
+                nonceStr: res['nonce_str'],
+                package: `prepay_id=${res['prepay_id']}`,
+                signType: 'MD5'
+            }
+            args['paySign'] = getSign(args, config.mch_key)
+            return args
+        })
+    }
+
+    //生成Prepay
+    static getPrepay(param): Promise<any> {
+        param = {
             //小程序ID
             appid: config.appID,
             //商户号
@@ -23,11 +53,11 @@ class WxPay {
             //随机字符串
             nonce_str: randomString(),
             //商品描述
-            body: data.body,
+            body: param.body,
             //商户订单号
             out_trade_no: dateformat('yyyymmddHHMMss') + randomNumber(),
             //标价金额
-            total_fee: data.total_fee,
+            total_fee: param.total_fee,
             //终端IP
             spbill_create_ip: '123.12.12.123',
             //通知地址
@@ -43,36 +73,18 @@ class WxPay {
         const xml = builder.buildObject(Object.assign(param, {sign}))
         return new Promise((resolve, reject) => {
             //请求统一下单接口
-            request.post(this.unifiedOrderUrl, {body: xml}, function (err, res, body) {
-                //解析返回的xml数据成对象
-                parser.parseString(body, function (err, res) {
+            request.post({url: this.unifiedOrderUrl, body: xml}, (error, response, body) => {
+                parser.parseString(body, (err, res) => {
                     if (err) reject(err)
-                    resolve(res.xml)
+                    resolve(res)
                 })
             })
-        }).then(res => {
-            //取出对象的值
-            for (let key in res) res[key] = res[key][0]
-            //判断请求是否成功
-            if (res['return_code'] !== 'SUCCESS') {
-                return res
-            }
-            //发起微信支付参数
-            const options = {
-                appId: res['appid'],
-                timeStamp: (Date.now() / 1000).toString(),
-                nonceStr: res['nonce_str'],
-                package: `prepay_id=${res['prepay_id']}`,
-                signType: 'MD5'
-            }
-            options['paySign'] = getSign(options, config.mch_key)
-            return options
         })
     }
 }
 
 //生成签名
-function getSign(param, mch_key) {
+function getSign(param, mch_key): string {
     const data = Object.create(null)
     for (const k of Object.keys(param).sort()) data[k] = param[k]
     const key = decodeURIComponent(qs.stringify(data) + `&key=${mch_key}`)

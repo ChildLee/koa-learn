@@ -1,4 +1,4 @@
-import {err, log} from './log'
+import {err, log} from '../config/log'
 
 class Middleware {
     //错误处理中间件

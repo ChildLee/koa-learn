@@ -7,14 +7,14 @@ import * as serve from 'koa-static'
 import * as bodyParser from 'koa-bodyparser'
 import config from './config'
 import router from './router'
-import Middleware from './config/middleware'
+import middleware from './middleware'
 
 const debug = bug('app')
 
 const app = new Koa()
 
-app.use(Middleware.error())
-app.use(Middleware.ms())
+app.use(middleware.error())
+app.use(middleware.ms())
 app.use(cors())//跨域
 app.use(serve(path.join(__dirname, '..', 'static')))//静态文件目录
 

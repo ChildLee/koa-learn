@@ -7,9 +7,6 @@ const xml2js = require('xml2js')
 const wxCrypt = require('./wxCrypt')
 // const app = require('../dist/src/app').default
 
-const parser = new xml2js.Parser()
-const builder = new xml2js.Builder()
-
 describe('moduleName', function () {
     it('info', async () => {
         let token = ''
@@ -62,73 +59,6 @@ describe('moduleName', function () {
         console.log(data)
     })
 
-    it('should xml2js', function () {
-        let parseString = require('xml2js').parseString
-        let xml = '<root>Hello xml2js!</root>'
-        parseString(xml, function (err, result) {
-            console.dir(result)
-        })
-    })
-
-    it('should js2xml', function () {
-        console.time('1')
-        let param = {
-            //小程序ID
-            appid: '1',
-            //商户号
-            mch_id: '2',
-            //随机字符串
-            nonce_str: '3',
-            //商品描述
-            body: '4',
-            //商户订单号
-            out_trade_no: '5',
-            //标价金额
-            total_fee: '6',
-            //终端IP
-            spbill_create_ip: '7',
-            //通知地址
-            notify_url: '8',
-            //交易类型
-            trade_type: 'JSAPI',
-            //用户标识
-            openid: '9'
-        }
-        console.log(builder.buildObject(param))
-        console.timeEnd('1')
-    })
-
-    it('should ASCII', function () {
-        console.time('1')
-        let param = {
-            //小程序ID
-            appid: '1',
-            //商户号
-            mch_id: '2',
-            //随机字符串
-            nonce_str: '3',
-            //商品描述
-            body: '{"a": 1}',
-            //商户订单号
-            out_trade_no: '5',
-            //标价金额
-            total_fee: '6',
-            //终端IP
-            spbill_create_ip: '7',
-            //通知地址
-            notify_url: '8',
-            //交易类型
-            trade_type: 'JSAPI',
-            //用户标识
-            openid: '9'
-        }
-        let sign = getSign(param, 'mch_key')
-        let a = builder.buildObject(Object.assign(param, {sign}))
-        console.log(a)
-
-        console.timeEnd('1')
-    })
-
     it('should request post', function () {
         request.post('http://127.0.0.1:3000/login', {
             form: {
@@ -140,46 +70,64 @@ describe('moduleName', function () {
         })
     })
 
-    it('should dateformat', function () {
-        console.log(32 - 'yyyymmddHHMMss'.length)
-        console.log(dateformat('yyyymmddHHMMss'))
+    it('should xml2js builder', function () {
+        console.time('xml2js builder')
+        const builder = new xml2js.Builder({
+            //根节点名称
+            rootName: 'xml',
+            //省略XML标题
+            headless: true
+        })
 
-        console.log(randomNumber().length)
-    })
-
-    it('should payid', function () {
         let pay = {
-            return_code: ['SUCCESS'],
-            return_msg: ['OK'],
-            appid: ['wx6e564de8b33a0a78'],
-            mch_id: ['1501796621'],
-            nonce_str: ['qOgvb2qGVpARyLoR'],
-            sign: ['25752B3B2FAE49B88508215D1E01FC0D'],
-            result_code: ['SUCCESS'],
-            prepay_id: ['wx25200645892095edc8a256401981036227'],
-            trade_type: ['JSAPI']
+            return_code: 'SUCCESS',
+            return_msg: 'OK',
+            appid: 'wx6e564de8b33a0a78',
+            mch_id: '1501796621',
+            nonce_str: 'qOgvb2qGVpARyLoR',
+            sign: '25752B3B2FAE49B88508215D1E01FC0D',
+            result_code: 'SUCCESS',
+            prepay_id: 'wx25200645892095edc8a256401981036227',
+            trade_type: 'JSAPI'
         }
-
-        for (let key in pay) {
-            pay[key] = pay[key][0]
+        const data = Object.create(null)
+        //用于获取对象自身所有的可枚举的属性值，但不包括原型中的属性，然后返回一个由属性名组成的数组
+        //console.log(Object.keys(pay))//[ 'return_code','return_msg','appid','mch_id','nonce_str','sign','result_code','prepay_id','trade_type' ]
+        //console.log(Object.keys(pay).sort())//排序
+        for (const k of Object.keys(pay).sort()) {
+            data[k] = pay[k]
         }
-
-
-        console.log(pay)
+        console.log(data)
+        console.log(builder.buildObject(data))
+        console.timeEnd('xml2js builder')
     })
 
-
-    it('should json', function () {
-        console.time('1')
-        console.log(!Number(parseInt(String('0' * 100))))
-        console.timeEnd('1')
+    it('should xml2js parser', function () {
+        console.time('xml2js parser')
+        const parser = new xml2js.Parser({
+            //不获取根节点
+            explicitRoot: false,
+            //true始终将子节点放入数组中; false则只有存在多个数组时才创建数组。
+            explicitArray: false
+        })
+        let xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                    <xml>
+                      <return_code>SUCCESS</return_code>
+                      <return_msg>OK</return_msg>
+                      <appid>wx6e564de8b33a0a78</appid>
+                      <mch_id>1501796621</mch_id>
+                      <nonce_str>qOgvb2qGVpARyLoR</nonce_str>
+                      <sign>25752B3B2FAE49B88508215D1E01FC0D</sign>
+                      <result_code>SUCCESS</result_code>
+                      <prepay_id>wx25200645892095edc8a256401981036227</prepay_id>
+                      <trade_type>JSAPI</trade_type>
+                    </xml>`
+        parser.parseString(xml, (err, data) => {
+            console.log(data)
+            console.timeEnd('xml2js parser')
+        })
     })
 
-    it('should a', function () {
-        console.time('1')
-
-        console.timeEnd('1')
-    })
 })
 
 //生成签名

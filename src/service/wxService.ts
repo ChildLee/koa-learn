@@ -33,10 +33,10 @@ class WxService {
     }
 
     /**
-     * 微信支付
+     * 微信小程序支付
      */
     static async pay(data) {
-        return await wxPay.getPrepay(data)
+        return await wxPay.appletsPayment(data)
     }
 }
 
