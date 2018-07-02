@@ -90,14 +90,14 @@ describe('moduleName', function () {
             prepay_id: 'wx25200645892095edc8a256401981036227',
             trade_type: 'JSAPI'
         }
-        const data = Object.create(null)
+        const data = {}
         //用于获取对象自身所有的可枚举的属性值，但不包括原型中的属性，然后返回一个由属性名组成的数组
         //console.log(Object.keys(pay))//[ 'return_code','return_msg','appid','mch_id','nonce_str','sign','result_code','prepay_id','trade_type' ]
         //console.log(Object.keys(pay).sort())//排序
-        for (const k of Object.keys(pay).sort()) {
-            data[k] = pay[k]
-        }
+        for (const k of Object.keys(pay).sort())
+            if (pay[k]) data[k] = pay[k]
         console.log(data)
+        console.log((qs.stringify(data)))
         console.log(builder.buildObject(data))
         console.timeEnd('xml2js builder')
     })
@@ -126,6 +126,66 @@ describe('moduleName', function () {
             console.log(data)
             console.timeEnd('xml2js parser')
         })
+    })
+
+    it('should assign', function () {
+        console.time('assign')
+        let pay = {
+            return_code: 'SUCCESS',
+            return_msg: 'OK',
+            appid: 'wx6e564de8b33a0a78',
+            mch_id: '1501796621',
+            nonce_str: 'qOgvb2qGVpARyLoR',
+            sign: '25752B3B2FAE49B88508215D1E01FC0D',
+            result_code: 'SUCCESS',
+            prepay_id: 'wx25200645892095edc8a256401981036227',
+            trade_type: 'JSAPI'
+        }
+        for (let i = 0; i < 999999; i++) {
+            Object.assign(pay, {[i]: i})
+        }
+        console.timeEnd('assign')
+    })
+
+    it('should obj赋值', function () {
+        console.time('assign')
+        let pay = {
+            return_code: 'SUCCESS',
+            return_msg: 'OK',
+            appid: 'wx6e564de8b33a0a78',
+            mch_id: '1501796621',
+            nonce_str: 'qOgvb2qGVpARyLoR',
+            sign: '25752B3B2FAE49B88508215D1E01FC0D',
+            result_code: 'SUCCESS',
+            prepay_id: 'wx25200645892095edc8a256401981036227',
+            trade_type: 'JSAPI'
+        }
+        for (let i = 0; i < 999999; i++) {
+            pay[i] = i
+        }
+        console.timeEnd('assign')
+    })
+
+    it('should createObj', function () {
+        console.time('createObj')
+        let param = {}
+        for (let i = 0; i < 999999; i++) {
+            param['op'] = 1
+        }
+        console.timeEnd('createObj')
+    })
+
+    it('should aas', function () {
+        console.time('createObj')
+        let param = Object.create(null)
+        for (let i = 0; i < 999999; i++) {
+            param['op'] = 1
+        }
+        console.timeEnd('createObj')
+    })
+
+    it('should timeStamp', function () {
+        console.log(Object.prototype.toString.call(''))
     })
 
 })

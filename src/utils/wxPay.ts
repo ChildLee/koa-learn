@@ -24,8 +24,12 @@ class WxPay {
     private static orderQueryUrl: string = 'https://api.mch.weixin.qq.com/pay/orderquery'
 
     //小程序支付
-    static appletsPayment(param): Promise<any> {
-        return this.getPrepay(param).then(res => {
+    static appletsPayment(data): Promise<any> {
+        //交易类型
+        data['trade_type'] = 'JSAPI'
+        //用户标识
+        data['openid'] = config.openid
+        return this.getPrepay(data).then(res => {
             //判断请求是否成功
             if (res['return_code'] !== 'SUCCESS') {
                 return res
@@ -44,8 +48,8 @@ class WxPay {
     }
 
     //生成Prepay
-    static getPrepay(param): Promise<any> {
-        param = {
+    static getPrepay(data): Promise<any> {
+        let param = {
             //小程序ID
             appid: config.appID,
             //商户号
@@ -53,24 +57,24 @@ class WxPay {
             //随机字符串
             nonce_str: randomString(),
             //商品描述
-            body: param.body,
+            body: data.body,
             //商户订单号
             out_trade_no: dateformat('yyyymmddHHMMss') + randomNumber(),
             //标价金额
-            total_fee: param.total_fee,
+            total_fee: data.total_fee,
             //终端IP
             spbill_create_ip: '123.12.12.123',
             //通知地址
             notify_url: 'http://127.0.0.1',
             //交易类型
-            trade_type: 'JSAPI',
+            trade_type: data.trade_type,
             //用户标识
-            openid: config.openid
+            openid: data.openid
         }
         //参数签名
-        let sign = getSign(param, config.mch_key)
+        param['sign'] = getSign(param, config.mch_key)
         //生成xml
-        const xml = builder.buildObject(Object.assign(param, {sign}))
+        const xml = builder.buildObject(param)
         return new Promise((resolve, reject) => {
             //请求统一下单接口
             request.post({url: this.unifiedOrderUrl, body: xml}, (error, response, body) => {
@@ -84,10 +88,10 @@ class WxPay {
 }
 
 //生成签名
-function getSign(param, mch_key): string {
-    const data = Object.create(null)
-    for (const k of Object.keys(param).sort()) data[k] = param[k]
-    const key = decodeURIComponent(qs.stringify(data) + `&key=${mch_key}`)
+function getSign(data, mch_key): string {
+    const param = {}
+    for (const k of Object.keys(data).sort()) if (data[k]) param[k] = data[k]
+    const key = decodeURIComponent(qs.stringify(param) + `&key=${mch_key}`)
     return crypto.createHash('md5').update(key, 'utf8').digest('hex').toUpperCase()
 }
 

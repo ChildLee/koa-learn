@@ -35,7 +35,7 @@ class WxController {
     static async pay(ctx) {
         let {total_fee, body} = ctx.request.body
         total_fee = parseInt(String(total_fee * 100))
-        if (!total_fee || !body) {
+        if (!total_fee || typeof body !== 'string' || !body.length) {
             return ctx.body = error(1001)
         }
         let payment = await wxService.pay({total_fee, body})
