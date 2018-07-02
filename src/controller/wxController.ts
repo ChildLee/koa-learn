@@ -1,5 +1,6 @@
+import * as joi from 'joi'
 import wxService from '../service/wxService'
-import {error, success} from '../utils/result'
+import result from '../utils/result'
 
 /**
  * 小程序接口
@@ -10,36 +11,63 @@ class WxController {
      */
     static async getOpenId(ctx) {
         let {code} = ctx.request.body
-        if (!code) {
-            return ctx.body = error(1001)
-        }
+        const {error} = joi.validate(code, joi.string().required())
+        if (error) return ctx.body = result.error(1001)
+
         let loginData = wxService.getOpenId(code)
-        ctx.body = success(JSON.parse(String(loginData)))
+        ctx.body = result.success(JSON.parse(String(loginData)))
     }
 
     /**
      * 获取用户手机号
      */
     static async getPhoneNumber(ctx) {
+        const schema = joi.object().keys({
+            code: joi.string().required(),
+            encryptedData: joi.string().required(),
+            iv: joi.string().required()
+        })
+        //验证参数
+        const {error} = joi.validate(ctx.request.body, schema, {allowUnknown: true})
+        if (error) return ctx.body = result.error(1001)
+
         let {code, encryptedData, iv} = ctx.request.body
-        if (!code || !encryptedData || !iv) {
-            return ctx.body = error(1001)
-        }
         let phoneNumber = await wxService.getPhoneNumber(ctx, {code, encryptedData, iv})
-        ctx.body = success(phoneNumber)
+        ctx.body = result.success(phoneNumber)
     }
 
     /**
      * 微信支付
      */
     static async pay(ctx) {
+        const schema = joi.object().keys({
+            total_fee: joi.number().min(0.01).required(),
+            body: joi.string().required()
+        })
+        //验证参数
+        const {error} = joi.validate(ctx.request.body, schema, {allowUnknown: true})
+        if (error) return ctx.body = result.error(1001)
+
         let {total_fee, body} = ctx.request.body
-        total_fee = parseInt(String(total_fee * 100))
-        if (!total_fee || typeof body !== 'string' || !body.length) {
-            return ctx.body = error(1001)
-        }
         let payment = await wxService.pay({total_fee, body})
-        ctx.body = success(payment)
+        ctx.body = result.success(payment)
+    }
+
+    /**
+     * 查询订单
+     */
+    static async orderQuery(ctx) {
+        const schema = joi.object().keys({
+            transaction_id: joi.string().allow(''),
+            out_trade_no: joi.string().allow('')
+        }).or('transaction_id', 'out_trade_no')
+        //验证参数
+        const {error} = joi.validate(ctx.request.body, schema, {allowUnknown: true})
+        if (error) return ctx.body = result.error(1001)
+
+        let {transaction_id, out_trade_no} = ctx.request.body
+        let payment = await wxService.orderQuery({transaction_id, out_trade_no})
+        ctx.body = result.success(payment)
     }
 }
 

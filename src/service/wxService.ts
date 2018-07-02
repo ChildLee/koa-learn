@@ -38,6 +38,13 @@ class WxService {
     static async pay(data) {
         return await wxPay.appletsPayment(data)
     }
+
+    /**
+     * 查询订单
+     */
+    static async orderQuery(data) {
+        return await wxPay.orderQuery(data)
+    }
 }
 
 export default WxService

@@ -52,5 +52,4 @@ class Result {
     }
 }
 
-export const success = Result.success
-export const error = Result.error
+export default Result

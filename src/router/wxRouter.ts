@@ -7,5 +7,6 @@ router.prefix('/wx')
 router.post('/getOpenId', wxController.getOpenId)
 router.post('/getPhoneNumber', wxController.getPhoneNumber)
 router.post('/pay', wxController.pay)
+router.post('/orderQuery', wxController.orderQuery)
 
 export default router
