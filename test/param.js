@@ -1,18 +1,56 @@
+const dateformat = require('dateformat')
+
 const joi = require('joi')
+const os = require('os')
 
-describe('joi', function () {
 
-    it('should joi', function () {
-        console.time('time')
+it('should joi', function () {
+    console.time('time')
 
-        const schema = joi.object().keys({
-            a: joi.number().min(0.01).required(),
-            b: joi.string().required()
-        }).or('a', 'b')
-        //验证参数
-        const {error} = joi.validate({a: '0.01', b: '1'}, schema, {allowUnknown: true})
-        console.log(error)
+    const schema = joi.object().keys({
+        a: joi.number().min(0.01).required(),
+        b: joi.string().required()
+    }).or('a', 'b')
+    //验证参数
+    const {error} = joi.validate({a: '0.01', b: '1'}, schema, {allowUnknown: true})
+    console.log(error)
 
-        console.timeEnd('time')
+    console.timeEnd('time')
+})
+
+it('should a', function () {
+    console.log(os.tmpdir())
+})
+
+it('should b', function () {
+    console.time('b')
+    let param = {a: 1}
+    for (let key in param) {
+        console.log(key)
+    }
+    console.timeEnd('b')
+})
+
+describe('isArr', function () {
+    it('should isArr', function () {
+        console.time('isArr')
+        console.log(Object.prototype.toString.call([]) === '[object Array]')
+        console.timeEnd('isArr')
     })
+
+    it('should isArr', function () {
+        console.time('isArr1')
+        console.log(Array.isArray([]))
+        console.timeEnd('isArr1')
+    })
+})
+
+it('should length', function () {
+    console.time('length')
+    console.log([].length)
+    console.timeEnd('length')
+})
+
+it('should date', function () {
+    console.log(dateformat('yyyymmddHHMMss'))
 })

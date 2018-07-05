@@ -1,3 +1,4 @@
+import * as path from 'path'
 //配置文件
 const config = {
     //token加密密钥
@@ -13,7 +14,13 @@ const config = {
     //商户密钥
     mch_key: '',
     //测试用
-    openid: 'oGNbS5CZWRt2pUR1TJivONVjxs2k'
+    openid: 'oGNbS5CZWRt2pUR1TJivONVjxs2k',
+    //文件上载的目录
+    uploadDir: path.join(__dirname, '..', '..', 'temp'),
+    //静态文件目录
+    static: path.join(__dirname, '..', '..', 'upload'),
+    //水印
+    watermark: path.join(__dirname, '..', '..', 'sy.png')
 }
 
 export default config
