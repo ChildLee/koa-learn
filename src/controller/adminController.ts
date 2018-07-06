@@ -28,6 +28,10 @@ class AdminController {
                 writeFile(file)
             }
         }
+        ctx.body = {
+            status: 0,
+            message: '上传成功'
+        }
     }
 }
 
