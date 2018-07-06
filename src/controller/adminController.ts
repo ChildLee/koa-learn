@@ -34,25 +34,32 @@ class AdminController {
 //文件处理
 function writeFile(file) {
     const image = sharp(file.path)
+    const newPath = path.join(config.static, dateformat('yyyymmddHHMMss') + Utils.randomStr() + '.jpg')
     image.metadata().then(res => {
         //小于该值不打水印
         if (res.width > 400 && res.height > 100) {
             image.overlayWith(config.watermark, {left: 10000, top: 10000})
-                .toFile(path.join(config.static, dateformat('yyyymmddHHMMss') + Utils.randomStr() + '.jpg'))
+                .toFile(newPath)
                 .then(res => {
-                    setTimeout(function () {
-                        fs.unlink(file.path, err => {
-                        })
-                    }, 10000)
+                    delFile(file.path)
                 })
         } else {
-            image.toFile(path.join(config.static, dateformat('yyyymmddHHMMss') + Utils.randomStr() + '.jpg'))
+            image.toFile(newPath)
                 .then(res => {
-                    setTimeout(function () {
-                        fs.unlink(file.path, err => {
-                        })
-                    }, 10000)
+                    delFile(file.path)
                 })
+        }
+    })
+
+}
+
+function delFile(path) {
+    fs.unlink(path, err => {
+        if (err) {
+            console.log(err)
+            setTimeout(() => {
+                fs.unlink(path,()=>{})
+            }, 1000)
         }
     })
 }
