@@ -5,7 +5,7 @@ import * as cors from 'koa2-cors'
 import * as serve from 'koa-static'
 import * as koaBody from 'koa-body'
 import * as compose from 'koa-compose'
-import config from './config'
+import config from './config/default'
 import utils from './utils/utils'
 import router from './router'
 import middleware from './middleware'
@@ -20,20 +20,23 @@ app.use(serve(path.join(__dirname, '..', 'static')))//静态文件目录
 
 //app.use(jwt({secret: config.secret}).unless({path: [/^\/login/, /^\/wx/]}))//token验证
 
+
 app.use(koaBody({
-    multipart: true,
-    formidable: {
-        uploadDir: config.uploadDir
-    }
-}))//解析参数
+  multipart: true,//解析参数
+  formidable: {
+    uploadDir: config.uploadDir//文件上传临时目录
+  }
+}))
 
 app.use(router.routes()).use(router.allowedMethods())//路由
 
-app.listen(3000, () => {
-    //初始化目录
-    utils.mkdirSync(config.uploadDir)
-    utils.mkdirSync(config.static)
-    debug('服务器启动成功!', 'http://127.0.0.1:3000')
+console.log(process.env.port)
+const port = process.env.port || 80
+const server = app.listen(port, () => {
+  //初始化目录
+  utils.mkdirSync(config.uploadDir)
+  utils.mkdirSync(config.static)
+  debug('服务器启动成功!', `http://127.0.0.1:${port}`)
 })
 
-export default app
+export default server

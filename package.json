@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "set debug=app & ts-node src/app.ts",
-    "test": "ts-node test/tsTest.ts",
+    "start": "set port=3000 & set debug=app & ts-node-dev src/app.ts",
     "tsc": "tsc"
   },
   "dependencies": {
@@ -20,7 +19,6 @@
     "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.5",
     "log4js": "^2.10.0",
-    "mocha": "^5.2.0",
     "mysql": "^2.15.0",
     "qs": "^6.5.2",
     "request": "^2.87.0",
@@ -48,8 +46,9 @@
     "@types/supertest": "^2.0.4",
     "@types/xml2js": "^0.4.3",
     "debug": "^3.1.0",
+    "mocha": "^5.2.0",
     "supertest": "^3.1.0",
-    "ts-node": "^7.0.0",
+    "ts-node-dev": "^1.0.0-pre.26",
     "typescript": "^2.9.2"
   }
 }

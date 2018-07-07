@@ -1,16 +1,16 @@
 import * as log4js from 'log4js'
 
 log4js.configure({
-    appenders: {
-        stdout: {type: 'stdout'},
-        err: {type: 'file', filename: 'log/err.log', maxLogSize: 10 * 1024 * 1024},
-        log: {type: 'file', filename: 'log/log.log', maxLogSize: 10 * 1024 * 1024}
-    },
-    categories: {
-        default: {appenders: ['stdout'], level: 'info'},
-        err: {appenders: ['err', 'stdout'], level: 'error'},
-        log: {appenders: ['log', 'stdout'], level: 'info'}
-    }
+  appenders: {
+    stdout: {type: 'stdout'},
+    err: {type: 'file', filename: 'log/err.log', maxLogSize: 10 * 1024 * 1024},
+    log: {type: 'file', filename: 'log/log.log', maxLogSize: 10 * 1024 * 1024}
+  },
+  categories: {
+    default: {appenders: ['stdout'], level: 'info'},
+    err: {appenders: ['err', 'stdout'], level: 'error'},
+    log: {appenders: ['log', 'stdout'], level: 'info'}
+  }
 })
 
 // logger.trace('Entering cheese testing')
