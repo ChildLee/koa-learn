@@ -1,4 +1,7 @@
 const dateformat = require('dateformat')
+const sharp = require('sharp')
+const path = require('path')
+const captcha = require('svg-captcha')
 
 const joi = require('joi')
 const os = require('os')
@@ -53,4 +56,13 @@ it('should length', function () {
 
 it('should date', function () {
     console.log(dateformat('yyyymmddHHMMss'))
+})
+
+it('should svg-captcha', function () {
+    console.time('1')
+    let code = captcha.create()
+    console.log(code)
+    sharp(Buffer.from(code.data))
+        .toFile(__dirname+'/a.png')
+    console.timeEnd('1')
 })
