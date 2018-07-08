@@ -30,7 +30,6 @@ app.use(koaBody({
 
 app.use(router.routes()).use(router.allowedMethods())//路由
 
-console.log(process.env.port)
 const port = process.env.port || 80
 const server = app.listen(port, () => {
   //初始化目录

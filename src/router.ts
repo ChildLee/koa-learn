@@ -3,15 +3,15 @@ import adminController from './controller/adminController'
 import wxController from './controller/wxController'
 
 const router = new Router()
-router.prefix('/api/v1')
+router.prefix('/api/v1/')
 
-router.post('/getOpenId', wxController.getOpenId)
-router.post('/phoneNumber', wxController.getPhoneNumber)
-router.post('/pay', wxController.pay)
-router.post('/orderQuery', wxController.orderQuery)
+router.post('/wx/getOpenId', wxController.getOpenId)
+router.post('/wx/phoneNumber', wxController.getPhoneNumber)
+router.post('/wx/pay', wxController.pay)
+router.post('/wx/orderQuery', wxController.orderQuery)
 
-router.post('/login', adminController.login)
-router.post('/area', adminController.area)
-router.post('/file', adminController.file)
+router.post('/admin/login', adminController.login)
+router.post('/admin/area', adminController.area)
+router.post('/admin/file', adminController.file)
 
 export default router
