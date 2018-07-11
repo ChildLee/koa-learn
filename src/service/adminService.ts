@@ -1,14 +1,14 @@
 import * as jwt from 'jsonwebtoken'
 import config from '../config/default'
-import AdminDao from '../dao/AdminDao'
+import {Area, User} from '../model'
 
 class AdminService {
-  static login() {
+  static async login() {
     return jwt.sign({}, config.secret, {expiresIn: config.expiresIn})
   }
 
-  static area() {
-    return AdminDao.getAdmin([{code: 11}])
+  static async area() {
+    return await User.findAll({include: [{model: Area}]})
   }
 }
 

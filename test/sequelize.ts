@@ -15,9 +15,6 @@ const sequelize = new Sequelize({
     idle: 10000
   },
 
-  query: {
-    raw: true
-  },
   operatorsAliases: false
 })
 
@@ -47,64 +44,41 @@ const Area = sequelize.define('area', {
   name: {
     type: STRING,
     allowNull: false
-  },
-  user_id: {
-    type: INTEGER,
-    allowNull: false
   }
 }, {
   underscored: true
 })
 
-User.hasOne(Area, {
-  onDelete: 'CASCADE',
-  onUpdate: 'RESTRICT'
-})
+User.hasOne(Area)
 
 it('should sync', async () => {
-  sequelize.sync({force: true}).then()
+  await sequelize.sync({force: true})
+  await User.create({name: '1'})
+  await Area.create({name: '1', user_id: '1'})
 })
 
-it('should add', async () => {
-  console.time('1')
-  User.create({name: '1', date: new Date()}).then(res => {
-    console.log(res['dataValues'].id)
-  })
-  console.timeEnd('1')
-})
-
-it('should del', function () {
-  User.destroy({where: {id: 3}}).then(res => {
-    console.log(res)
+it('should auto-transaction', async () => {
+  await sequelize.transaction(async (t) => {
+    await User.create({name: '111'}, {transaction: t})
+    await User.create({name: '222'}, {transaction: t})
+    await User.create({name: '333'}, {transaction: t})
+    throw new Error()
   })
 })
 
-it('should update', function () {
-  User.update({name: '2'}, {where: {id: 1}}).then(res => {
-    console.log(res)
-  })
+it('should transaction', async () => {
+  const t = await sequelize.transaction()
+  await User.create({name: '111'}, {transaction: t})
+  await User.create({name: '222'}, {transaction: t})
+  await User.create({name: '333'}, {transaction: t})
+  await t.commit()
 })
 
-it('should get', function () {
-  User.findAll().then(res => {
-    console.log(res)
-  })
-})
-
-it('should gt', function () {
-  User.findAll({where: {id: {[Op.gt]: 1}}}).then(res => {
-    console.log(res)
-  })
-})
-
-it('should page', function () {
-  User.findAll({order: [['id', 'DESC']], offset: 0, limit: 5}).then(res => {
-    console.log(res)
-  })
-})
-
-it('should addref', function () {
-  Area.create({name: '1', user_id: '1'}).then(res => {
-    console.log(res)
-  })
+it('should include findAll ', function () {
+  setInterval(function () {
+    console.time('1')
+    User.findAll({include: [{model: Area}]}).then(user => {
+      console.timeEnd('1')
+    })
+  }, 1111)
 })

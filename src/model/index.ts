@@ -1,13 +1,13 @@
 import * as Sequelize from 'sequelize'
-import area from './area'
+import {area, user} from './area'
 
 const sequelize = new Sequelize({
+  dialect: 'mysql',
   host: 'localhost',
   port: 3306,
-  database: 'area',
   username: 'root',
   password: 'sa',
-  dialect: 'mysql',
+  database: 'test',
 
   pool: {
     max: 5,
@@ -17,7 +17,11 @@ const sequelize = new Sequelize({
   },
 
   operatorsAliases: false,
-  logging: false
+  logging: function (log) {
+
+  }
 })
 
+export const User = sequelize.import('user', user)
 export const Area = sequelize.import('area', area)
+User.hasOne(Area)
