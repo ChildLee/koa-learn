@@ -16,6 +16,19 @@ class AdminController {
     ctx.body = result.success(await adminService.area())
   }
 
+  static async add(ctx) {
+    ctx.body = result.success(await adminService.add())
+  }
+
+  static async del(ctx) {
+    let {id} = ctx.request.body
+    ctx.body = result.success(!!await adminService.del(id))
+  }
+
+  static async update(ctx) {
+    ctx.body = result.success(await adminService.update())
+  }
+
   static async file(ctx) {
     const files = ctx.request.files || {}
     for (let key in files) {

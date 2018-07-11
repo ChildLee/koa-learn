@@ -18,7 +18,7 @@ const sequelize = new Sequelize({
 
   operatorsAliases: false,
   logging: function (log) {
-
+    console.log(log)
   }
 })
 

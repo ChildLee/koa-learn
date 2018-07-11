@@ -11,6 +11,9 @@ router.post('/wx/pay', wxController.pay)
 router.post('/wx/orderQuery', wxController.orderQuery)
 
 router.post('/admin/login', adminController.login)
+router.post('/admin/add', adminController.add)
+router.post('/admin/del', adminController.del)
+router.post('/admin/update', adminController.update)
 router.post('/admin/area', adminController.area)
 router.post('/admin/file', adminController.file)
 

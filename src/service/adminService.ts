@@ -10,6 +10,18 @@ class AdminService {
   static async area() {
     return await User.findAll({include: [{model: Area}]})
   }
+
+  static async add() {
+    return await User.create({name: '666'})
+  }
+
+  static async del(id) {
+    return await User.destroy({where: {id}})
+  }
+
+  static async update() {
+    return await User.update({name: 1}, {where: {id: 71}})
+  }
 }
 
 export default AdminService

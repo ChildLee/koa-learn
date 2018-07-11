@@ -29,3 +29,9 @@ it('should ms', function () {
     })
   }, 1111)
 })
+
+it('should update', function () {
+  query("UPDATE `users` SET `name`=3,`updated_at`='2018-07-11 05:49:26' WHERE `id` = 70").then(res => {
+    console.log(res)
+  })
+})
