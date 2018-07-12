@@ -1,25 +1,21 @@
-import * as bug from 'debug'
-import * as path from 'path'
 import * as Koa from 'koa'
+import * as path from 'path'
+import * as bug from 'debug'
+import * as jwt from 'koa-jwt'
 import * as cors from 'koa2-cors'
 import * as serve from 'koa-static'
 import * as koaBody from 'koa-body'
+import * as views from 'koa-views'
 import * as compose from 'koa-compose'
 import config from './config/default'
 import utils from './utils/utils'
-import router from './router'
+import view from './router/view'
+import router from './router/router'
 import middleware from './middleware'
 
 const debug = bug('app')
 
 const app = new Koa()
-
-app.use(compose([middleware.error(), middleware.ms()]))
-app.use(cors())//跨域
-app.use(serve(path.join(__dirname, '..', 'static')))//静态文件目录
-
-//app.use(jwt({secret: config.secret}).unless({path: [/^\/login/, /^\/wx/]}))//token验证
-
 
 app.use(koaBody({
   multipart: true,//解析参数
@@ -28,6 +24,15 @@ app.use(koaBody({
   }
 }))
 
+app.use(views(path.join(__dirname, '..', 'views'), {extension: 'ejs'}))
+
+app.use(compose([middleware.ms(), middleware.error()]))
+app.use(cors())//跨域
+app.use(serve(path.join(__dirname, '..', 'static')))//静态文件目录
+app.use(serve(path.join(__dirname, '..', 'views')))//静态文件目录
+
+app.use(jwt({secret: config.secret}).unless({path: [/^(?!\/api)/, /\/login$/]}))//token验证
+app.use(view.routes()).use(view.allowedMethods())
 app.use(router.routes()).use(router.allowedMethods())//路由
 
 const port = process.env.port || 80

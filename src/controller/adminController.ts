@@ -9,7 +9,7 @@ import config from '../config/default'
 
 class AdminController {
   static async login(ctx) {
-    ctx.body = result.success({token: adminService.login()})
+    ctx.body = result.success(await adminService.login())
   }
 
   static async area(ctx) {

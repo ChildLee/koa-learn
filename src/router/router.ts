@@ -1,6 +1,6 @@
 import * as Router from 'koa-router'
-import adminController from './controller/adminController'
-import wxController from './controller/wxController'
+import adminController from '../controller/adminController'
+import wxController from '../controller/wxController'
 
 const router = new Router()
 router.prefix('/api/v1/')

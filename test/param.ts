@@ -27,3 +27,11 @@ it('should svg-captcha', function () {
     })
   console.timeEnd('1')
 })
+
+it('should reg', function () {
+  console.log(/\/login$/.test('/login'))
+})
+
+it('should ?!reg', function () {
+  console.log(/^(?!\/api)/.test('/api/'))
+})

@@ -4,7 +4,7 @@ import {Area, User} from '../model'
 
 class AdminService {
   static async login() {
-    return jwt.sign({}, config.secret, {expiresIn: config.expiresIn})
+    return await jwt.sign({}, config.secret, {expiresIn: config.expiresIn})
   }
 
   static async area() {
