@@ -7,7 +7,8 @@
   editor.customConfig.uploadImgShowBase64 = true
   let $text1 = $('#text1')
   editor.customConfig.onchange = function (html) {
-    $text1.html(editor.txt.html())
+    console.log(html)
+    $text1.html(html)
   }
   editor.create()
 </script>

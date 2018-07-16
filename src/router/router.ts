@@ -1,4 +1,5 @@
 import * as Router from 'koa-router'
+import * as koaBody from 'koa-body'
 import adminController from '../controller/adminController'
 import wxController from '../controller/wxController'
 
@@ -15,6 +16,6 @@ router.post('/admin/add', adminController.add)
 router.post('/admin/del', adminController.del)
 router.post('/admin/update', adminController.update)
 router.post('/admin/area', adminController.area)
-router.post('/admin/file', adminController.file)
+router.post('/admin/file', koaBody({multipart: true}), adminController.file)
 
 export default router

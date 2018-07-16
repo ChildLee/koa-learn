@@ -30,6 +30,7 @@ class AdminController {
   }
 
   static async file(ctx) {
+    console.log(ctx.request.body)
     const files = ctx.request.files || {}
     for (let key in files) {
       const file = files[key]
