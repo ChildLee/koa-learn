@@ -73,7 +73,7 @@ class WxPay {
       //用户标识
       openid: data.openid
     }
-    return this.logic(this.unifiedOrderUrl, param)
+    return logic(this.unifiedOrderUrl, param)
   }
 
   //查询订单
@@ -90,25 +90,25 @@ class WxPay {
       //商户订单号
       out_trade_no: data.out_trade_no
     }
-    return this.logic(this.orderQueryUrl, param)
+    return logic(this.orderQueryUrl, param)
   }
+}
 
-  //微信支付通用方法
-  static logic(url, param): Promise<any> {
-    //参数签名
-    param['sign'] = getSign(param, config.mch_key)
-    //生成xml
-    const xml = builder.buildObject(param)
-    return new Promise((resolve, reject) => {
-      //请求统一下单接口
-      request.post({url: url, body: xml}, (error, response, body) => {
-        parser.parseString(body, (err, res) => {
-          if (err) reject(err)
-          resolve(res)
-        })
+//微信支付通用方法
+function logic(url, param): Promise<any> {
+  //参数签名
+  param['sign'] = getSign(param, config.mch_key)
+  //生成xml
+  const xml = builder.buildObject(param)
+  return new Promise((resolve, reject) => {
+    //请求统一下单接口
+    request.post({url: url, body: xml}, (error, response, body) => {
+      parser.parseString(body, (err, res) => {
+        if (err) reject(err)
+        resolve(res)
       })
     })
-  }
+  })
 }
 
 //生成签名

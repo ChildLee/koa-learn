@@ -1,8 +1,8 @@
 import * as crypto from 'crypto'
 
 class WxCrypto {
-  private appId: string
-  private sessionKey: string
+  appId: string
+  sessionKey: string
 
   constructor(appId, sessionKey) {
     this.appId = appId

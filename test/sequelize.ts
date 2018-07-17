@@ -1,12 +1,12 @@
 import * as Sequelize from 'sequelize'
 
 const sequelize = new Sequelize({
+  dialect: 'mysql',
   host: 'localhost',
   port: 3306,
-  database: 'test',
   username: 'root',
   password: 'sa',
-  dialect: 'mysql',
+  database: 'test',
 
   pool: {
     max: 5,
