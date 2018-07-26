@@ -22,11 +22,11 @@ const sequelize = new Sequelize({
     underscored: true
   }
 })
-const {INTEGER, STRING, BOOLEAN, DATE} = Sequelize
+const {INTEGER, BIGINT, STRING, BOOLEAN, DATE} = Sequelize
 
 const User = sequelize.define('user', {
   id: {
-    type: INTEGER,
+    type: BIGINT,
     primaryKey: true,
     autoIncrement: true
   },
@@ -68,7 +68,7 @@ const Role = sequelize.define('role', {
   comment: '角色表'
 })
 
-const Access = sequelize.define('access', {
+const Permission = sequelize.define('permission', {
   id: {
     type: INTEGER,
     primaryKey: true,
@@ -79,6 +79,30 @@ const Access = sequelize.define('access', {
     allowNull: false,
     defaultValue: '',
     comment: '权限名'
+  },
+  type: {
+    type: STRING,
+    allowNull: false,
+    defaultValue: '',
+    comment: '资源类型：menu,button'
+  },
+  url: {
+    type: STRING,
+    allowNull: false,
+    defaultValue: '',
+    comment: '访问url地址'
+  },
+  pid: {
+    type: INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+    comment: '父结点id'
+  },
+  level: {
+    type: INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+    comment: '节点层级'
   }
 }, {
   comment: '权限表'
@@ -90,15 +114,15 @@ User.belongsToMany(Role, {through: UserRole})
 Role.belongsToMany(User, {through: UserRole})
 
 //角色-权限表
-const RoleAccess = sequelize.define('role_access', {})
-Role.belongsToMany(Access, {through: RoleAccess})
-Access.belongsToMany(Role, {through: RoleAccess})
+const RoleAccess = sequelize.define('role_permission', {})
+Role.belongsToMany(Permission, {through: RoleAccess})
+Permission.belongsToMany(Role, {through: RoleAccess})
 
 it('init', async () => {
   await sequelize.sync({force: true})
-  await User.bulkCreate([{name: '超级管理员'}, {name: '超级管理员'}, {name: '超级管理员'}])
-  await Role.bulkCreate([{name: '超级角色'}, {name: '超级角色'}, {name: '超级角色'}])
-  await Access.bulkCreate([{name: '超级权限'}, {name: '超级权限'}, {name: '超级权限'}])
+  await User.bulkCreate([{name: '超级管理员1'}])
+  await Role.bulkCreate([{name: '超级角色1'}])
+  await Permission.bulkCreate([{name: '超级权限'}])
 })
 
 it('ManyToMany', async () => {
@@ -108,14 +132,8 @@ it('ManyToMany', async () => {
 })
 
 it('findAll', function () {
-  User.findAll().then(user => {
-    user = JSON.parse(JSON.stringify(user))
-    console.log(user)
-  })
-})
-
-it('delete', function () {
-  User.destroy({where: {id: 1}}).then(res => {
+  Permission.findAll().then(res => {
+    res = JSON.parse(JSON.stringify(res))
     console.log(res)
   })
 })
