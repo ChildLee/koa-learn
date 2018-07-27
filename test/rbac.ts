@@ -18,11 +18,14 @@ const sequelize = new Sequelize({
   timezone: '+08:00',
   operatorsAliases: false,
   define: {
-    //下划线命名
+    // 禁止修改表名
+    freezeTableName: true,
+    // 下划线命名
     underscored: true
   }
 })
-const {INTEGER, BIGINT, STRING, BOOLEAN, DATE} = Sequelize
+
+const {TINYINT, INTEGER, BIGINT, STRING, BOOLEAN, DATE, Op} = Sequelize
 
 const User = sequelize.define('user', {
   id: {
@@ -74,65 +77,88 @@ const Permission = sequelize.define('permission', {
     primaryKey: true,
     autoIncrement: true
   },
-  name: {
-    type: STRING,
-    allowNull: false,
-    defaultValue: '',
-    comment: '权限名'
-  },
   type: {
-    type: STRING,
+    type: TINYINT,
     allowNull: false,
-    defaultValue: '',
-    comment: '资源类型：menu,button'
+    defaultValue: -1,
+    comment: '资源类型：-1=default,0=menu,1=button'
   },
-  url: {
-    type: STRING,
-    allowNull: false,
-    defaultValue: '',
-    comment: '访问url地址'
-  },
-  pid: {
+  menu_id: {
     type: INTEGER,
-    allowNull: false,
-    defaultValue: 0,
-    comment: '父结点id'
-  },
-  level: {
-    type: INTEGER,
-    allowNull: false,
-    defaultValue: 0,
-    comment: '节点层级'
+    comment: '菜单ID'
   }
 }, {
   comment: '权限表'
 })
 
-//用户-角色表
-const UserRole = sequelize.define('user_role', {})
-User.belongsToMany(Role, {through: UserRole})
-Role.belongsToMany(User, {through: UserRole})
-
-//角色-权限表
-const RoleAccess = sequelize.define('role_permission', {})
-Role.belongsToMany(Permission, {through: RoleAccess})
-Permission.belongsToMany(Role, {through: RoleAccess})
-
-it('init', async () => {
-  await sequelize.sync({force: true})
-  await User.bulkCreate([{name: '超级管理员1'}])
-  await Role.bulkCreate([{name: '超级角色1'}])
-  await Permission.bulkCreate([{name: '超级权限'}])
+const Menu = sequelize.define('menu', {
+  id: {
+    type: INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  name: {
+    type: STRING,
+    allowNull: false,
+    defaultValue: '',
+    comment: '菜单名称'
+  },
+  url: {
+    type: STRING,
+    allowNull: false,
+    defaultValue: '',
+    comment: '菜单URL'
+  },
+  pid: {
+    type: INTEGER,
+    comment: '父菜单ID'
+  }
+}, {
+  comment: '菜单表'
 })
 
-it('ManyToMany', async () => {
-  await UserRole.create({user_id: 2, role_id: 2})
-  const userRoles = await UserRole.findAll()
-  console.log(JSON.parse(JSON.stringify(userRoles)))
+//用户-角色表
+// const UserRole = sequelize.define('user_role', {})
+User.belongsToMany(Role, {through: 'user_role'})
+Role.belongsToMany(User, {through: 'user_role'})
+
+//角色-权限表
+// const RoleAccess = sequelize.define('role_permission', {})
+Role.belongsToMany(Permission, {through: 'role_permission'})
+Permission.belongsToMany(Role, {through: 'role_permission'})
+
+//权限-菜单关联
+Permission.belongsTo(Menu)
+Menu.hasOne(Permission)
+
+Menu.hasMany(Menu, {foreignKey: 'pid'})
+it('init', async () => {
+  await sequelize.sync({force: true})
+  await Menu.create({name: '菜单'})
+  await Menu.create({name: '用户管理', pid: 1})
+  await Menu.create({name: '课程管理', pid: 1})
+  await Menu.create({name: '添加用户', pid: 2, url: '/user/add', permission: {type: 0}}, {include: [Permission]})
+  await Menu.create({name: '删除用户', pid: 2, url: '/user/del', permission: {type: 0}}, {include: [Permission]})
+  await Menu.create({name: '添加管理', pid: 3, url: '/course/add', permission: {type: 0}}, {include: [Permission]})
+  await Menu.create({name: '删除管理', pid: 3, url: '/course/del', permission: {type: 0}}, {include: [Permission]})
+  const user = await User.create({name: 'admin'})
+  const role = await Role.create({name: 'SuperAdmin'})
+  await user['addRoles'](role)
+})
+
+it('menu', function () {
+  Menu.findAll({
+    include: [{model: Menu}],
+    raw: true
+  }).then(res => {
+    console.log(res)
+    // res = JSON.parse(JSON.stringify(res))
+    // console.log(res)
+  })
 })
 
 it('findAll', function () {
-  Permission.findAll().then(res => {
+  Menu.findAll().then(res => {
     res = JSON.parse(JSON.stringify(res))
     console.log(res)
   })
