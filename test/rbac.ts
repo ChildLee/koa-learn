@@ -22,6 +22,10 @@ const sequelize = new Sequelize({
     freezeTableName: true,
     // 下划线命名
     underscored: true
+  },
+
+  logging: (sql) => {
+    console.log(sql)
   }
 })
 
@@ -116,6 +120,8 @@ const Menu = sequelize.define('menu', {
 }, {
   comment: '菜单表'
 })
+//菜单表-父菜单与主键关联
+Menu.hasMany(Menu, {foreignKey: 'pid'})
 
 //用户-角色表
 // const UserRole = sequelize.define('user_role', {})
@@ -130,31 +136,42 @@ Permission.belongsToMany(Role, {through: 'role_permission'})
 //权限-菜单关联
 Permission.belongsTo(Menu)
 Menu.hasOne(Permission)
-
-Menu.hasMany(Menu, {foreignKey: 'pid'})
 it('init', async () => {
   await sequelize.sync({force: true})
+  //菜单数据初始化
   await Menu.create({name: '菜单'})
   await Menu.create({name: '用户管理', pid: 1})
   await Menu.create({name: '课程管理', pid: 1})
+  await Menu.create({name: '服装', pid: 1})
+  await Menu.create({name: '男装', pid: 4})
+  await Menu.create({name: '最新款式', pid: 5, url: '/clothes/get'})
   await Menu.create({name: '添加用户', pid: 2, url: '/user/add', permission: {type: 0}}, {include: [Permission]})
   await Menu.create({name: '删除用户', pid: 2, url: '/user/del', permission: {type: 0}}, {include: [Permission]})
-  await Menu.create({name: '添加管理', pid: 3, url: '/course/add', permission: {type: 0}}, {include: [Permission]})
-  await Menu.create({name: '删除管理', pid: 3, url: '/course/del', permission: {type: 0}}, {include: [Permission]})
+  await Menu.create({name: '修改用户', pid: 2, url: '/user/update', permission: {type: 0}}, {include: [Permission]})
+  await Menu.create({name: '添加课程', pid: 3, url: '/course/add', permission: {type: 0}}, {include: [Permission]})
+  await Menu.create({name: '删除课程', pid: 3, url: '/course/del', permission: {type: 0}}, {include: [Permission]})
+  await Menu.create({name: '修改课程', pid: 3, url: '/course/update', permission: {type: 0}}, {include: [Permission]})
+
   const user = await User.create({name: 'admin'})
   const role = await Role.create({name: 'SuperAdmin'})
   await user['addRoles'](role)
 })
 
-it('menu', function () {
-  Menu.findAll({
-    include: [{model: Menu}],
-    raw: true
-  }).then(res => {
-    console.log(res)
-    // res = JSON.parse(JSON.stringify(res))
-    // console.log(res)
+it('menu', async () => {
+  //菜单生成
+  const menu = await Menu.findAll({
+    where: {pid: 1},
+    include: [{
+      model: Menu,
+      include: [{
+        model: Menu,
+        attributes: {exclude: ['pid', 'created_at', 'updated_at']}
+      }],
+      attributes: {exclude: ['pid', 'created_at', 'updated_at']}
+    }],
+    attributes: {exclude: ['pid', 'created_at', 'updated_at']}
   })
+  console.log(JSON.stringify(menu, null, 2))
 })
 
 it('findAll', function () {
