@@ -16,6 +16,11 @@ const debug = bug('app')
 
 const app = new Koa()
 
+app.use(async (ctx, next) => {
+  console.log(ctx.url)
+  await next()
+})
+
 app.use(compose([middleware.ms(), middleware.error()]))
 
 app.use(serve(path.join(__dirname, '..', 'static')))//静态文件目录

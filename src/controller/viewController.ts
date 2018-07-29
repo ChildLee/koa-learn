@@ -5,6 +5,11 @@ class ViewController {
     }
     await ctx.render('index')
   }
+
+  static async rest(ctx) {
+    console.log(ctx.params.id)
+    ctx.body = ctx.query.id
+  }
 }
 
 export default ViewController

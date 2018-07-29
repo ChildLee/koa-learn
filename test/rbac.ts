@@ -31,7 +31,7 @@ const sequelize = new Sequelize({
 
 const {TINYINT, INTEGER, BIGINT, STRING, BOOLEAN, DATE, Op} = Sequelize
 
-const User = sequelize.define('sys_user', {
+const User = sequelize.define('user', {
   id: {
     type: BIGINT,
     primaryKey: true,
@@ -56,10 +56,11 @@ const User = sequelize.define('sys_user', {
     comment: '封禁状态 1.有效 0:无效'
   }
 }, {
+  tableName: 'sys_user',
   comment: '用户表'
 })
 
-const Role = sequelize.define('sys_role', {
+const Role = sequelize.define('role', {
   id: {
     type: INTEGER,
     primaryKey: true,
@@ -72,10 +73,11 @@ const Role = sequelize.define('sys_role', {
     comment: '角色名'
   }
 }, {
+  tableName: 'sys_role',
   comment: '角色表'
 })
 
-const Permission = sequelize.define('sys_permission', {
+const Permission = sequelize.define('permission', {
   id: {
     type: INTEGER,
     primaryKey: true,
@@ -92,10 +94,11 @@ const Permission = sequelize.define('sys_permission', {
     comment: '菜单ID'
   }
 }, {
+  tableName: 'sys_permission',
   comment: '权限表'
 })
 
-const Menu = sequelize.define('sys_menu', {
+const Menu = sequelize.define('menu', {
   id: {
     type: INTEGER,
     primaryKey: true,
@@ -118,10 +121,14 @@ const Menu = sequelize.define('sys_menu', {
     comment: '父菜单ID'
   }
 }, {
+  tableName: 'sys_menu',
   comment: '菜单表'
 })
 
-const Operation = sequelize.define('sys_operation', {
+//菜单表-父菜单与主键关联
+Menu.hasMany(Menu, {foreignKey: 'pid'})
+
+const Operation = sequelize.define('operation', {
   id: {
     type: INTEGER,
     primaryKey: true,
@@ -143,11 +150,10 @@ const Operation = sequelize.define('sys_operation', {
     defaultValue: ''
   }
 }, {
+  tableName: 'sys_operation',
   comment: '操作权限'
 })
 
-//菜单表-父菜单与主键关联
-Menu.hasMany(Menu, {foreignKey: 'pid'})
 
 //用户-角色表
 // const UserRole = sequelize.define('user_role', {})
@@ -171,21 +177,28 @@ it('init', async () => {
   //菜单数据初始化
   const type = 0//类型为菜单
   await Menu.create({name: '菜单'})
+  //一级菜单
   await Menu.create({name: '用户管理', pid: 1, permission: {type}}, {include: [Permission]})
-  await Menu.create({name: '课程管理', pid: 1, permission: {type}}, {include: [Permission]})
-  await Menu.create({name: '服装', pid: 1, permission: {type}}, {include: [Permission]})
-  await Menu.create({name: '男装', pid: 4, permission: {type}}, {include: [Permission]})
-  await Menu.create({name: '最新款式', pid: 5, url: '/clothes/get'}, {include: [Permission]})
+  await Menu.create({name: '角色管理', pid: 1, permission: {type}}, {include: [Permission]})
+  await Menu.create({name: '权限管理', pid: 1, permission: {type}}, {include: [Permission]})
+  //用户菜单
+  await Menu.create({name: '用户列表', pid: 2, url: '/user/list', permission: {type}}, {include: [Permission]})
   await Menu.create({name: '添加用户', pid: 2, url: '/user/add', permission: {type}}, {include: [Permission]})
-  await Menu.create({name: '删除用户', pid: 2, url: '/user/del', permission: {type}}, {include: [Permission]})
-  await Menu.create({name: '修改用户', pid: 2, url: '/user/update', permission: {type}}, {include: [Permission]})
-  await Menu.create({name: '添加课程', pid: 3, url: '/course/add', permission: {type}}, {include: [Permission]})
-  await Menu.create({name: '删除课程', pid: 3, url: '/course/del', permission: {type}}, {include: [Permission]})
-  await Menu.create({name: '修改课程', pid: 3, url: '/course/update', permission: {type}}, {include: [Permission]})
-
+  await Menu.create({name: '编辑用户', pid: 2, url: '/user/update', permission: {type}}, {include: [Permission]})
+  await Menu.create({name: '设置角色', pid: 2, url: '/user/role', permission: {type}}, {include: [Permission]})
+  //角色菜单
+  await Menu.create({name: '角色列表', pid: 3, url: '/role/list', permission: {type}}, {include: [Permission]})
+  await Menu.create({name: '添加角色', pid: 3, url: '/role/add', permission: {type}}, {include: [Permission]})
+  await Menu.create({name: '编辑角色', pid: 3, url: '/role/update', permission: {type}}, {include: [Permission]})
+  await Menu.create({name: '设置权限', pid: 3, url: '/role/permission', permission: {type}}, {include: [Permission]})
+  //权限菜单
+  await Menu.create({name: '权限列表', pid: 4, url: '/permission/list', permission: {type}}, {include: [Permission]})
+  await Menu.create({name: '添加权限', pid: 4, url: '/permission/add', permission: {type}}, {include: [Permission]})
+  await Menu.create({name: '编辑权限', pid: 4, url: '/permission/update', permission: {type}}, {include: [Permission]})
+  //
   const user = await User.create({name: 'admin'})
   const role = await Role.create({name: 'SuperAdmin'})
-  await user['addSys_roles'](role)
+  await user['addRoles'](role)
 })
 
 it('menu', async () => {
@@ -194,13 +207,9 @@ it('menu', async () => {
     where: {pid: 1},
     include: [{
       model: Menu,
-      include: [{
-        model: Menu,
-        attributes: {exclude: ['pid', 'created_at', 'updated_at']}
-      }],
-      attributes: {exclude: ['pid', 'created_at', 'updated_at']}
+      attributes: ['id', 'name', 'url']
     }],
-    attributes: {exclude: ['pid', 'created_at', 'updated_at']}
+    attributes: ['id', 'name']
   })
   console.log(JSON.stringify(menu, null, 2))
 })
